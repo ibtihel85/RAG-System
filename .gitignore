@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.xml
+
+# Model weights & large files
+*.bin
+*.safetensors
+*.pt
+*.pth
+models/
+checkpoints/
+
+# HuggingFace cache (keep out of repo)
+~/.cache/huggingface/
+
+# Data (raw dataset is downloaded at runtime)
+data/raw/
+data/processed/
+
+# Outputs
+results.json
+results/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Env files (never commit secrets)
+.env
+.env.local
+secrets.yaml

@@ -1,0 +1,39 @@
+# RAG-NLI Pipeline — Python dependencies
+# Tested on Python 3.10 / 3.11
+
+# ── Core ML ──────────────────────────────────────────────────────────────────
+torch>=2.1.0
+transformers>=4.40.0
+sentence-transformers>=2.6.0
+accelerate>=0.27.0
+bitsandbytes>=0.43.0        # 4-bit quantisation (requires CUDA)
+
+# ── Retrieval ─────────────────────────────────────────────────────────────────
+faiss-cpu>=1.7.4            # swap for faiss-gpu if CUDA is available
+rank-bm25>=0.2.2
+
+# ── NLP / Data ────────────────────────────────────────────────────────────────
+datasets>=2.18.0
+nltk>=3.8.1
+rouge-score>=0.1.2
+sentencepiece>=0.1.99
+
+# ── Scientific stack ──────────────────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+
+# ── Visualisation ────────────────────────────────────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ── Config / CLI ─────────────────────────────────────────────────────────────
+pyyaml>=6.0.1
+tqdm>=4.66.0
+
+# ── Dev / Testing ────────────────────────────────────────────────────────────
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# ── HuggingFace Hub (for gated model access) ─────────────────────────────────
+huggingface-hub>=0.22.0
