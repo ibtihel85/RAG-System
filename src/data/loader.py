@@ -1,5 +1,3 @@
-
-
 from __future__ import annotations
 
 import logging
@@ -25,7 +23,19 @@ def chunk_paragraph(
     window: int = 4,
     stride: int = 2,
 ) -> List[Document]:
-    
+    """Split a paragraph into overlapping sentence-window chunks.
+
+    Args:
+        text:    Raw paragraph string.
+        title:   Article title prepended to doc.text (not doc.body).
+        base_id: Starting doc_id for the first chunk of this paragraph.
+        window:  Number of sentences per chunk.
+        stride:  Sentences to advance between consecutive chunks.
+
+    Returns:
+        List of Document objects.  Short paragraphs (≤ window sentences) are
+        returned as a single chunk.
+    """
     sentences = sent_tokenize(text)
 
     if len(sentences) <= window:
@@ -91,7 +101,20 @@ def build_corpus_and_qa(
     chunk_window: int = 4,
     chunk_stride: int = 2,
 ) -> Tuple[List[Document], List[QASample]]:
-    
+    """Build a chunked corpus and aligned QA pairs from a SQuAD split.
+
+    Args:
+        dataset:         A HuggingFace Dataset object (train or validation split).
+        max_corpus_docs: Hard cap on total corpus chunks.
+        max_qa_samples:  Hard cap on QA samples collected.
+        answerable_only: Skip unanswerable SQuAD v2 questions if True.
+        chunk_window:    Sentence window size passed to ``chunk_paragraph``.
+        chunk_stride:    Stride passed to ``chunk_paragraph``.
+
+    Returns:
+        corpus:     Flat list of Document chunks.
+        qa_pairs:   List of QASample objects whose gold_doc_ids index into corpus.
+    """
     context_to_chunks: Dict[str, List[Document]] = {}
     corpus: List[Document] = []
     qa_pairs: List[QASample] = []
@@ -133,7 +156,7 @@ def build_corpus_and_qa(
 
         chunks_for_ctx = context_to_chunks[ctx]
 
-        # ── Find which chunks contain each gold answer ────────────────────────
+        # ── Find which chunks contain each gold answer (in doc.body) ─────────
         gold_doc_ids: Set[int] = set()
         gold_doc_id: Optional[int] = None
 
@@ -142,7 +165,7 @@ def build_corpus_and_qa(
             if not ans_lower:
                 continue
             for chunk in chunks_for_ctx:
-                if ans_lower in chunk.text.lower():  # BUG: should be chunk.body
+                if ans_lower in chunk.body.lower():
                     gold_doc_ids.add(chunk.doc_id)
                     if gold_doc_id is None:
                         gold_doc_id = chunk.doc_id
@@ -170,7 +193,11 @@ def build_corpus_and_qa(
 
 
 def load_squad_splits(trust_remote_code: bool = True):
-    
+    """Load SQuAD v2 train/validation splits from HuggingFace Hub.
+
+    Returns:
+        Tuple of (train_data, val_data) HuggingFace Dataset objects.
+    """
     logger.info("Loading SQuAD v2 from HuggingFace Datasets …")
     squad = load_dataset("rajpurkar/squad_v2", trust_remote_code=trust_remote_code)
     return squad["train"], squad["validation"]
