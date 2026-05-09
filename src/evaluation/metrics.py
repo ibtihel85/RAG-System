@@ -1,3 +1,9 @@
+"""
+All multi-gold-document functions check r.gold_doc_ids (the full set of
+valid chunks) rather than the single primary r.gold_doc_id to avoid
+undercounting recall when a question maps to multiple chunks.
+"""
+
 from __future__ import annotations
 
 import re
@@ -76,7 +82,7 @@ def compute_qa_metrics(results: List[RAGResult]) -> Dict[str, float]:
 # ---------------------------------------------------------------------------
 
 def _gold_set(r: RAGResult):
-    return {r.gold_doc_id}
+    return r.gold_doc_ids if r.gold_doc_ids else {r.gold_doc_id}
 
 
 def recall_at_k(
@@ -110,7 +116,6 @@ def mrr_at_k(
 
 
 def _body_contains_answer(doc_body: str, gold_answers: List[str]) -> bool:
-    
     body_lower = doc_body.lower()
     for ans in gold_answers:
         ans_norm = ans.strip().lower()
