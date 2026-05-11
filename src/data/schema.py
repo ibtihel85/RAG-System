@@ -27,6 +27,8 @@ class QASample:
     gold_doc_ids: Set[int] = field(default_factory=set)
 
 
+
+
 @dataclass
 class RAGResult:
 
